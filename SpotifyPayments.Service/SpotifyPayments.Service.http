@@ -1,0 +1,6 @@
+@SpotifyPayments.Service_HostAddress = http://localhost:5145
+
+GET {{SpotifyPayments.Service_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
