@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SpotifyPayment.Domain.Dtos;
 using SpotifyPayment.Domain.Models;
 using SpotifyPayment.Domain.Repository.Repositories;
 
@@ -10,9 +11,9 @@ namespace SpotifyPayments.Service.Controllers;
 public class ClientsController(IClientRepository repository) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] string name)
+    public async Task<IActionResult> Post([FromBody] ClientDto client)
     {
-        var newClient = new ClientModel { Name = name };
+        var newClient = new ClientModel { Name = client.Name };
         await repository.AddAsync(newClient);
 
         return StatusCode(200, newClient);

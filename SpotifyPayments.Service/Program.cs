@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SpotifyPayment.Domain.Repository;
 using SpotifyPayment.Domain.Repository.Repositories;
 using SpotifyPayment.Domain.Seeders;
+using SpotifyPayments.Application;
 
 namespace SpotifyPayments.Service
 {
@@ -15,6 +16,8 @@ namespace SpotifyPayments.Service
             // Add services to the container.
             builder.Services.AddDbContext<DataContext>(options =>
             options.UseInMemoryDatabase("TestDb"));
+
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyReference).Assembly));
 
             // Repositories
             builder.Services.AddScoped<IClientRepository, ClientRepository>();

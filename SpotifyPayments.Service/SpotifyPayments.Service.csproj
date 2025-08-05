@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SpotifyPayment.Domain\SpotifyPayment.Domain.csproj" />
+    <ProjectReference Include="..\SpotifyPayments.Application\SpotifyPayments.Application.csproj" />
   </ItemGroup>
 
 </Project>
