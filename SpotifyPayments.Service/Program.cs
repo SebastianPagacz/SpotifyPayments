@@ -1,9 +1,11 @@
 
 using Microsoft.EntityFrameworkCore;
+using SpotifyPayment.Domain;
 using SpotifyPayment.Domain.Repository;
 using SpotifyPayment.Domain.Repository.Repositories;
 using SpotifyPayment.Domain.Seeders;
 using SpotifyPayments.Application;
+using SpotifyPayments.Service.Middleware;
 
 namespace SpotifyPayments.Service
 {
@@ -18,6 +20,8 @@ namespace SpotifyPayments.Service
             options.UseInMemoryDatabase("TestDb"));
 
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyReference).Assembly));
+
+            builder.Services.AddAutoMapper(cfg => { }, typeof(DomainAssemblyReference));
 
             // Repositories
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
@@ -45,6 +49,8 @@ namespace SpotifyPayments.Service
 
 
             app.MapControllers();
+
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
             var scope = app.Services.CreateScope();
             var seeder = scope.ServiceProvider.GetRequiredService<IClientSeeder>();
