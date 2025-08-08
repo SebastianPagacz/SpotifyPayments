@@ -26,6 +26,7 @@ public class ClientRepository(DataContext context) : IClientRepository
     public async Task<ClientModel> UpdateAsync(ClientModel client)
     {
         await context.SaveChangesAsync();
+
         return client;
     }
 }

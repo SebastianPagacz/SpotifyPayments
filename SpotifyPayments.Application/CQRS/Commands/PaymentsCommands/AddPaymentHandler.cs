@@ -14,19 +14,17 @@ public class AddPaymentHandler(IPaymentRepository paymentRepository, IClientRepo
     {
         var existingClient = await clientRepository.GetAsync(request.ClientId);
 
-        if (existingClient is null || existingClient.IsDeleted)
+        if (existingClient is null)
             throw new ItemNotFoundException("Client does not exist");
 
         // Calculating validity 
         var today = DateTime.UtcNow;
-        if (request.AmountPaid % 6 != 0 || request.AmountPaid < 6) // Price of one month of subscritpion is 6 therefore if the price is not devidable by 6 throw an exception
+        if (request.AmountPaid % 6 != 0 || request.AmountPaid < 6) // Price of one month of subscritpion is 6 therefore if the price is not divisible by 6 throw an exception
             throw new AmountPaidException("Inncorect amount paid");
-        var calculatedValidity = DateOnly.FromDateTime(today).AddMonths(request.AmountPaid / 6);
 
         var newPayment = new PaymentModel
         {
             DateOfPayment = today,
-            ValididtyOfPayment = calculatedValidity,
             AmountPaid = request.AmountPaid,
             ClientId = request.ClientId,
             Client = existingClient,

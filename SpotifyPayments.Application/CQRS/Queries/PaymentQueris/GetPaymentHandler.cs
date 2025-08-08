@@ -12,7 +12,7 @@ public class GetPaymentHandler(IPaymentRepository repository, IMapper mapper) : 
     {
         var existingPayment = await repository.GetAsync(request.Id);
 
-        if (existingPayment == null) // TODO: Add custom exception
+        if (existingPayment == null)
             throw new ItemNotFoundException("Payment does not exist");
 
         return mapper.Map<PaymentDto>(existingPayment);

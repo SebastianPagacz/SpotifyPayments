@@ -9,4 +9,5 @@ public class DataContext : DbContext
 
     public DbSet<PaymentModel> Payments { get; set; }
     public DbSet<ClientModel> Clients { get; set; }
+    public DbSet<BalanceModel> Balances { get; set; }
 }

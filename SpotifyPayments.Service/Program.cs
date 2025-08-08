@@ -26,6 +26,8 @@ namespace SpotifyPayments.Service
             // Repositories
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
+
 
             builder.Services.AddScoped<IClientSeeder, ClientSeeder>();
 
