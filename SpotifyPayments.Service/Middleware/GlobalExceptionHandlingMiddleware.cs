@@ -22,6 +22,12 @@ public class GlobalExceptionHandlingMiddleware(RequestDelegate next, ILogger<Glo
             context.Response.StatusCode = 400;
             await context.Response.WriteAsJsonAsync(new { error = ex.Message });
         }
+        catch(ItemAlreadyExistsException ex)
+        {
+            logger.LogWarning(ex, ex.Message);
+            context.Response.StatusCode = 409;
+            await context.Response.WriteAsJsonAsync(new {error = ex.Message });
+        }
         catch (Exception ex)
         {
             logger.LogWarning(ex, ex.Message);

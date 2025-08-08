@@ -27,4 +27,14 @@ public class BalanceRepository(DataContext context) : IBalanceRepository
         await context.SaveChangesAsync();
         return balance;
     }
+
+    public async Task<bool> ClientBalanceAsync(int clientId)
+    {
+        return await context.Balances.AnyAsync(b => b.ClientId == clientId);
+    }
+
+    public async Task<BalanceModel> GetBalanceForClientAsync(int clientId)
+    {
+        return await context.Balances.FirstOrDefaultAsync(b => b.ClientId == clientId);
+    }
 }
