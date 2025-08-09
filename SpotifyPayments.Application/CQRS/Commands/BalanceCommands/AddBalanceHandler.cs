@@ -28,6 +28,7 @@ public class AddBalanceHandler(IBalanceRepository balanceRepository, IClientRepo
             BalanceAmount = 0,
             ValidUntil = currentDateOnly,
             ClientId = request.ClientId,
+            Client = exisitngClient,
         };
         
         await balanceRepository.AddAsync(newBalance);

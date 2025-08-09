@@ -5,10 +5,11 @@ using SpotifyPayment.Domain.Dtos;
 using SpotifyPayment.Domain.Exceptions;
 using SpotifyPayment.Domain.Models;
 using SpotifyPayment.Domain.Repository.Repositories;
+using SpotifyPayments.Application.CQRS.Commands.BalanceCommands;
 
 namespace SpotifyPayments.Application.CQRS.Commands.PaymentsCommands;
 
-public class AddPaymentHandler(IPaymentRepository paymentRepository, IClientRepository clientRepository, IMapper mapper) : IRequestHandler<AddPaymentCommand, PaymentDto>
+public class AddPaymentHandler(IPaymentRepository paymentRepository, IClientRepository clientRepository, IMapper mapper, IMediator mediator) : IRequestHandler<AddPaymentCommand, PaymentDto>
 {
     public async Task<PaymentDto> Handle(AddPaymentCommand request, CancellationToken cancellationToken)
     {
@@ -17,20 +18,24 @@ public class AddPaymentHandler(IPaymentRepository paymentRepository, IClientRepo
         if (existingClient is null)
             throw new ItemNotFoundException("Client does not exist");
 
-        // Calculating validity 
-        var today = DateTime.UtcNow;
         if (request.AmountPaid % 6 != 0 || request.AmountPaid < 6) // Price of one month of subscritpion is 6 therefore if the price is not divisible by 6 throw an exception
             throw new AmountPaidException("Inncorect amount paid");
 
         var newPayment = new PaymentModel
         {
-            DateOfPayment = today,
+            DateOfPayment = DateTime.UtcNow,
             AmountPaid = request.AmountPaid,
             ClientId = request.ClientId,
             Client = existingClient,
         };
 
         await paymentRepository.AddAsync(newPayment);
+
+        await mediator.Send(new PutBalanceCommand
+        {
+            ClientId = request.ClientId,
+            AmountPaid = request.AmountPaid
+        });
 
         return mapper.Map<PaymentDto>(newPayment);
     }
