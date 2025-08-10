@@ -1,10 +1,13 @@
 
+using Hangfire;
+using Hangfire.Storage.SQLite;
 using Microsoft.EntityFrameworkCore;
 using SpotifyPayment.Domain;
 using SpotifyPayment.Domain.Repository;
 using SpotifyPayment.Domain.Repository.Repositories;
 using SpotifyPayment.Domain.Seeders;
 using SpotifyPayments.Application;
+using SpotifyPayments.Application.Services;
 using SpotifyPayments.Service.Middleware;
 
 namespace SpotifyPayments.Service
@@ -17,7 +20,10 @@ namespace SpotifyPayments.Service
 
             // Add services to the container.
             builder.Services.AddDbContext<DataContext>(options =>
-            options.UseInMemoryDatabase("TestDb"));
+            options.UseSqlite("Data Source=app.db"));
+
+            builder.Services.AddHangfire(config =>
+                config.UseSQLiteStorage("Data Source=hangfire.db"));
 
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyReference).Assembly));
 
@@ -28,7 +34,11 @@ namespace SpotifyPayments.Service
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
 
-            builder.Services.AddScoped<IClientSeeder, ClientSeeder>();
+            // Services
+            builder.Services.AddScoped<IBalanceService, BalanceService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
+            //builder.Services.AddScoped<IClientSeeder, ClientSeeder>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -63,11 +73,17 @@ namespace SpotifyPayments.Service
 
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
-            var scope = app.Services.CreateScope();
-            var seeder = scope.ServiceProvider.GetRequiredService<IClientSeeder>();
-            await seeder.SeedAsync();
+            //var scope = app.Services.CreateScope();
+            //var seeder = scope.ServiceProvider.GetRequiredService<IClientSeeder>();
+            //await seeder.SeedAsync();
 
             app.UseCors("AllowLocalhost");
+
+            // TODO: fix this
+            RecurringJob.AddOrUpdate<IBalanceService>(
+                "monthly-balance-check",
+                service => service.ProcessMonthlyBalancesAsync(),
+                "19 0 10 * *");
 
             app.Run();
         }

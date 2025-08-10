@@ -7,7 +7,8 @@ public interface IBalanceRepository
     public Task<BalanceModel> AddAsync(BalanceModel balance);
     public Task<BalanceModel> GetAsync(int id);
     public Task<List<BalanceModel>> GetAllAsync();
-    public Task<BalanceModel> UpdateAsync(BalanceModel balance);
+    public Task<BalanceModel> UpdateAsync(BalanceModel balance); // TODO: possbile refactor
     public Task<bool> ClientBalanceAsync(int clientId);
     public Task<BalanceModel> GetBalanceForClientAsync(int clientId);
+    public Task SaveChangesAsync();
 }

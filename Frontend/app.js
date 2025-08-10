@@ -4,7 +4,7 @@ const addPayment = () =>{
     fetch("https://localhost:32769/api/Payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({amountPaid: amount, clientId: 6})
+        body: JSON.stringify({amountPaid: amount, clientId: 1})
     })
     .then(response => response.json())
     .then(data => {
