@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpotifyPayments</title>
+</head>
+<body>
+    <h1>Dodaj płatność</h1>
+    <input type="number" id="amount" placeholder="Kwota">
+    <button onclick="addPayment()">Dodaj</button>
+
+    <h1>Sprawdz stan konta</h1>
+    <input type="number" id="balanceId" placeholder="id Klienta">
+    <button onClick="getBalance()">zobacz</button>
+    <script src="app.js"></script>
+
+    <div id="balance-result"></div>
+</body>
+</html>

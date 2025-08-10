@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpotifyPayment.Domain.Dtos;
+using SpotifyPayment.Domain.Dtos.Requests;
 using SpotifyPayments.Application.CQRS.Commands.PaymentsCommands;
 using SpotifyPayments.Application.CQRS.Queries.PaymentQueris;
 
@@ -12,12 +13,13 @@ namespace SpotifyPayments.Service.Controllers;
 public class PaymentsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Post(int amountPaid, int clientId)
+    [Consumes("application/json")]
+    public async Task<IActionResult> Post([FromBody] AddPaymentRequest request)
     {
         var result = await mediator.Send(new AddPaymentCommand
         {
-            AmountPaid = amountPaid,
-            ClientId = clientId,
+            AmountPaid = request.AmountPaid,
+            ClientId = request.ClientId,
         });
 
         return StatusCode(200, result);
