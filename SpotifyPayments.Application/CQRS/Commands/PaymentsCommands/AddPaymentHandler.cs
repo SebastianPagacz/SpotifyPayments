@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hangfire;
 using MediatR;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SpotifyPayment.Domain.Dtos;
@@ -6,10 +7,11 @@ using SpotifyPayment.Domain.Exceptions;
 using SpotifyPayment.Domain.Models;
 using SpotifyPayment.Domain.Repository.Repositories;
 using SpotifyPayments.Application.CQRS.Commands.BalanceCommands;
+using SpotifyPayments.Application.Services;
 
 namespace SpotifyPayments.Application.CQRS.Commands.PaymentsCommands;
 
-public class AddPaymentHandler(IPaymentRepository paymentRepository, IClientRepository clientRepository, IMapper mapper, IMediator mediator) : IRequestHandler<AddPaymentCommand, PaymentDto>
+public class AddPaymentHandler(IPaymentRepository paymentRepository, IClientRepository clientRepository, IMapper mapper, IMediator mediator, IBalanceService balanceService) : IRequestHandler<AddPaymentCommand, PaymentDto>
 {
     public async Task<PaymentDto> Handle(AddPaymentCommand request, CancellationToken cancellationToken)
     {

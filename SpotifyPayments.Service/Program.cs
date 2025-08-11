@@ -25,6 +25,8 @@ namespace SpotifyPayments.Service
             builder.Services.AddHangfire(config =>
                 config.UseSQLiteStorage("Data Source=hangfire.db"));
 
+            builder.Services.AddHangfireServer();
+
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyReference).Assembly));
 
             builder.Services.AddAutoMapper(cfg => { }, typeof(DomainAssemblyReference));
@@ -73,17 +75,16 @@ namespace SpotifyPayments.Service
 
             app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
-            //var scope = app.Services.CreateScope();
-            //var seeder = scope.ServiceProvider.GetRequiredService<IClientSeeder>();
-            //await seeder.SeedAsync();
+            var scope = app.Services.CreateScope();
+            var recurringJob = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+            recurringJob.AddOrUpdate<IEmailService>(
+                "monthly-reminder",
+                service => service.SendEmailAsync("s.pagacz123@gmail.com", "Sebi", "Dupa?"),
+                "*/1 * * * *");
 
             app.UseCors("AllowLocalhost");
 
-            // TODO: fix this
-            RecurringJob.AddOrUpdate<IBalanceService>(
-                "monthly-balance-check",
-                service => service.ProcessMonthlyBalancesAsync(),
-                "19 0 10 * *");
+            app.UseHangfireDashboard("/hangfire");
 
             app.Run();
         }
