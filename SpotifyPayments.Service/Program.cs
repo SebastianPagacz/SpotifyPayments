@@ -77,9 +77,9 @@ namespace SpotifyPayments.Service
 
             var scope = app.Services.CreateScope();
             var recurringJob = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
-            recurringJob.AddOrUpdate<IEmailService>(
+            recurringJob.AddOrUpdate<IBalanceService>(
                 "monthly-reminder",
-                service => service.SendEmailAsync("s.pagacz123@gmail.com", "Sebi", "Dupa?"),
+                service => service.ProcessMonthlyBalancesAsync(6),
                 "*/1 * * * *");
 
             app.UseCors("AllowLocalhost");

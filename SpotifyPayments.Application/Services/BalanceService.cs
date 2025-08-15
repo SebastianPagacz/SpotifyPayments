@@ -5,14 +5,14 @@ namespace SpotifyPayments.Application.Services;
 
 public class BalanceService(IBalanceRepository repository, IEmailService emailService) : IBalanceService
 {
-    public async Task ProcessMonthlyBalancesAsync()
+    public async Task ProcessMonthlyBalancesAsync(int processedAmount)
     {
         var allBalances = await repository.GetAllAsync();
 
 
         foreach (var balance in allBalances)
         {
-            balance.BalanceAmount -= 6;
+            balance.BalanceAmount -= processedAmount;
 
             if (balance.BalanceAmount < 0)
             {

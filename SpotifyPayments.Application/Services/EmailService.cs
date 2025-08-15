@@ -8,8 +8,7 @@ namespace SpotifyPayments.Application.Services;
 
 public class EmailService : IEmailService
 {
-    private readonly IConfiguration _configuration;
-    public async Task SendEmailAsync(string email, string userName, string messageContent)
+    public async Task SendEmailAsync(string email, string messageContent)
     {
         var message = new MimeMessage();
         message.From.Add(MailboxAddress.Parse("s.pagacz123@gmail.com"));
